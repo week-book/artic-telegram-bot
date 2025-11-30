@@ -8,7 +8,9 @@
     "start": "node dist/bot.js",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint": "npx eslint src --ext .ts"
+    "lint": "npx eslint src --ext .ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [],
   "author": "",
@@ -25,11 +27,13 @@
     "@types/node-telegram-bot-api": "^0.64.12",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
+    "@vitest/ui": "^4.0.14",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
   }
 }
