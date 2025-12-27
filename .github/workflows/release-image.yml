@@ -46,7 +46,7 @@ jobs:
         run: |
           IMAGE=ghcr.io/week-book/artic-telegram-bot
           docker push $IMAGE:latest
-      
+
       - name: Checkout k8s manifests repo
         uses: actions/checkout@v4
         with:
@@ -57,7 +57,7 @@ jobs:
 
       - name: Update image tag in kustomization.yaml
         run: |
-          cd k8s-manifests/k8s/artic-bot
+          cd k8s-manifests/artic-bot
 
           NEW_TAG=sha-${{ github.sha }}
 
