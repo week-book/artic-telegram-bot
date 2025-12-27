@@ -10,7 +10,8 @@
     "format:fix": "prettier --write .",
     "lint": "npx eslint src --ext .ts",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "test:cover": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
