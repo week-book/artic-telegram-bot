@@ -1,31 +1,26 @@
 import axios from 'axios';
+import { getEnv } from '../env.js';
 import type { ArtData, Result } from '../types/art.js';
+
+const apikey = getEnv('API_ACCESS_KEY');
 
 export async function getRandomArt(): Promise<Result<ArtData, string>> {
   try {
-    const randomPage = Math.floor(Math.random() * 20000) + 1;
     const res = await axios.get(
-      `https://api.artic.edu/api/v1/artworks?page=${randomPage}&limit=1`,
+      `https://api.unsplash.com/photos/random?client_id=${apikey}`,
     );
 
-    const data = res.data.data[0];
-    if (!data) {
-      return { ok: false, error: '🎨 Не удалось найти работу.' };
+    const data = res.data;
+    if (!data || !data.urls?.regular || !data.user?.name) {
+      return { ok: false, error: '📷 Не удалось получить фото.' };
     }
-
-    const imageId = data.image_id;
-    if (!imageId) {
-      return { ok: false, error: '🎨 У этой работы нет изображения.' };
-    }
-
-    const imageUrl = `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
 
     return {
       ok: true,
       value: {
-        title: data.title,
-        artist: data.artist_title || 'Неизвестный художник',
-        url: imageUrl,
+        title: data.alt_description || data.description || 'Без названия',
+        artist: data.user.name,
+        url: data.urls.regular,
       },
     };
   } catch (err) {

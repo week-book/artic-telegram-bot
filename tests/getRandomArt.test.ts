@@ -5,16 +5,21 @@ import { getRandomArt } from '../src/services/art.js';
 vi.mock('axios');
 const mockedAxios = vi.mocked(axios, true);
 
+vi.mock('../src/env', () => {
+  return {
+    getEnv: (name: string) => {
+      if (name === 'API_ACCESS_KEY') return "key";
+      throw new Error(`Env variable ${name} is missing`);
+    },
+  };
+});
+
 test('возвращает корректные данные при валидном ответе', async () => {
   const mockResponse = {
     data: {
-      data: [
-        {
-          image_id: 'abc123',
-          title: 'Test Title',
-          artist_title: 'Test Artist',
-        },
-      ],
+      alt_description: 'text',
+      urls: { regular: 'url' },
+      user: { name: 'name' },
     },
   };
 
@@ -27,8 +32,8 @@ test('возвращает корректные данные при валидн
     return;
   }
 
-  expect(res.value.title).toBe('Test Title');
-  expect(res.value.url).toContain('abc123');
+  expect(res.value.title).toBe('text');
+  expect(res.value.url).toContain('url');
 });
 
 test('возвращает ошибку при отсутвие data', async () => {
@@ -45,43 +50,16 @@ test('возвращает ошибку при отсутвие data', async () 
     return;
   }
 
-  expect(res.error).toBe('Ошибка при запросе API.');
+  expect(res.error).toBe('📷 Не удалось получить фото.');
 });
 
-test('возвращает ошибку при отсутвие data[0]', async () => {
-  const mockResponse = {
-    data: { data: [] },
-  };
-
-  mockedAxios.get.mockResolvedValue(mockResponse);
+test('возвращает ошибку при ошибке запроса', async () => {
+  mockedAxios.get.mockRejectedValue(new Error('Network error'));
 
   const res = await getRandomArt();
 
-  if (res.ok) {
-    expect(res.ok).toBe(false);
-    return;
+  expect(res.ok).toBe(false);
+  if (!res.ok) {
+    expect(res.error).toBe('Ошибка при запросе API.');
   }
-
-  expect(res.error).toBe('🎨 Не удалось найти работу.');
-});
-
-test('возвращает ошибку при отсутствии image_id в data[0]', async () => {
-  const mockResponse = {
-    data: {
-      data: [
-        {}
-      ]
-    },
-  };
-
-  mockedAxios.get.mockResolvedValue(mockResponse);
-
-  const res = await getRandomArt();
-
-  if (res.ok) {
-    expect(res.ok).toBe(false);
-    return;
-  }
-
-  expect(res.error).toBe('🎨 У этой работы нет изображения.');
 });
