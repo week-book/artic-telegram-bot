@@ -5,6 +5,15 @@ import { getRandomArt } from '../src/services/art.js';
 vi.mock('axios');
 const mockedAxios = vi.mocked(axios, true);
 
+vi.mock('../src/env', () => {
+  return {
+    getEnv: (name: string) => {
+      if (name === 'API_ACCESS_KEY') return "key";
+      throw new Error(`Env variable ${name} is missing`);
+    },
+  };
+});
+
 test('возвращает корректные данные при валидном ответе', async () => {
   const mockResponse = {
     data: {
