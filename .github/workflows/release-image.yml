@@ -22,7 +22,7 @@ jobs:
     with:
       manifests_repo: week-book/k8s-manifests
       manifests_path: week-art/artic-telegram-bot
-      ervice_name: artic-telegram-bot
+      service_name: artic-telegram-bot
       image_tag: sha-${{ github.sha }}
     secrets:
       K8S_REPO_TOKEN: ${{ secrets.K8S_REPO_TOKEN }}
