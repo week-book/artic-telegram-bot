@@ -8,7 +8,8 @@ const mockedAxios = vi.mocked(axios, true);
 vi.mock('../src/env', () => {
   return {
     getEnv: (name: string) => {
-      if (name === 'API_ACCESS_KEY') return "key";
+      if (name === 'ART_API_BASE_URL') return 'https://api.week-art.ru';
+      if (name === 'ART_API_KEY') return 'wa_live_test_key';
       throw new Error(`Env variable ${name} is missing`);
     },
   };
@@ -17,9 +18,9 @@ vi.mock('../src/env', () => {
 test('возвращает корректные данные при валидном ответе', async () => {
   const mockResponse = {
     data: {
-      alt_description: 'text',
-      urls: { regular: 'url' },
-      user: { name: 'name' },
+      title: 'text',
+      artist_name: 'name',
+      s3_url: 'url',
     },
   };
 
