@@ -2,25 +2,26 @@ import axios from 'axios';
 import { getEnv } from '../env.js';
 import type { ArtData, Result } from '../types/art.js';
 
-const apikey = getEnv('API_ACCESS_KEY');
+const apiBaseUrl = getEnv('ART_API_BASE_URL');
+const apiKey = getEnv('ART_API_KEY');
 
 export async function getRandomArt(): Promise<Result<ArtData, string>> {
   try {
-    const res = await axios.get(
-      `https://api.unsplash.com/photos/random?client_id=${apikey}`,
-    );
+    const res = await axios.get(`${apiBaseUrl}/artworks/random`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
 
     const data = res.data;
-    if (!data || !data.urls?.regular || !data.user?.name) {
+    if (!data || !data.s3_url || !data.title) {
       return { ok: false, error: '📷 Не удалось получить фото.' };
     }
 
     return {
       ok: true,
       value: {
-        title: data.alt_description || data.description || 'Без названия',
-        artist: data.user.name,
-        url: data.urls.regular,
+        title: data.title || 'Без названия',
+        artist: data.artist_name || 'Unknown',
+        url: data.s3_url,
       },
     };
   } catch (err) {
